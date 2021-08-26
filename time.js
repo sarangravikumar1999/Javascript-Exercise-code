@@ -9,10 +9,11 @@ setTimeout(Time=()=>{
     var hours = time.getHours();
     var minutes =time.getMinutes();
     var seconds =time.getSeconds();
-    console.log(`${hours}:${minutes}:${seconds}`),1000
+    console.log(`${hours}:${minutes}:${seconds}`)
 
 },1000)
 let i=0;
 while(i<5){
     Time();
+    i++
 }
