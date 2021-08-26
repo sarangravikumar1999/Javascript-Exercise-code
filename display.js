@@ -17,9 +17,12 @@ var library = [
   },
 ];
 
-// Answer:
-for (let i in library) {
-  console.log(
-    `author is ${library[i].author} title of the book is ${library[i].title} and reading status is ${library[i].readingStatus}`
-  );
+displayLibrary =()=>{
+  for (let i in library) {
+    console.log(
+      `author is ${library[i].author} title of the book is ${library[i].title} and reading status is ${library[i].readingStatus}`
+    );
+  }
 }
+
+displayLibrary();

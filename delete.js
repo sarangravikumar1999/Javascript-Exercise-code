@@ -1,10 +1,12 @@
-// Write a JavaScript program to delete the rollno property from the following object. Also print the object before or after deleting the property.
+// Write a JavaScript program to delete the rollNo property from the following object. Also print the object before or after deleting the property.var
+
 var student = {
-  name: "David Rayy",
-  sclass: "VI",
-  rollno: 12,
+  "name": "David Ray",
+  "sClass": "VI",
+  "rollNo": 12,
 };
 
-// Answer:
-delete student.rollno;
-console.log(student);
+deleteProperty =(...args)=>{
+  delete args[0].rollNo;
+}
+deleteProperty(student);

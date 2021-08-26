@@ -6,8 +6,11 @@ var student = {
   rollno: 12,
 };
 // Answer:
-let count = 0;
+objectLength = () => {
+  let count = 0;
 
-for (let i in student) {
-  count++;
-}
+  for (let i in student) {
+    count++;
+  }
+};
+objectLength();

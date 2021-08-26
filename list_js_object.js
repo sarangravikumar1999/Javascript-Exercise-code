@@ -8,5 +8,9 @@ var student = {
 // Sample Output: name,sclass,rollno
 
 // Answer:
-for (let i in student){
-    console.log(i);}
+listObject=(...args)=>{
+console.log(Object.keys(args[0]))
+}
+
+listObject(student);
+
