@@ -9,11 +9,7 @@ Time = () => {
   var seconds = time.getSeconds();
   console.log(`${hours}:${minutes}:${seconds}`);
 };
-let i = 0;
 
-setTimeout(() => {
-  while (i < 5) {
-    Time();
-    i++;
-  }
+setInterval(function(){ 
+	Time();
 }, 1000);
