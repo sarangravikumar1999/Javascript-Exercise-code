@@ -8,25 +8,34 @@ const Login = () => {
   const { user } = useContext(AppContext);
   console.log(user);
 
-  const [loginUserName, setLoginUserName] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+
+  const [loginUser,setLoginUser] = useState([]);
   const [message, setMessage] = useState("");
+
+
+  const handleChange = (event)=>{
+      const {name,value} = event.target;
+      setLoginUser({
+        ...loginUser,
+        [name]:value
+      })
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     user.map((person) => {
-      if (loginUserName === person.name && loginPassword === person.password) {
+      if (loginUser.userName === person.regUserName && loginUser.password === person.regPassword) {
         history.push("/dashboard");
       } else {
         setMessage(
           "please input correct username and password else create a account"
         );
-        setLoginPassword("");
-        setLoginUserName("");
+
       }
       return 0;
     });
   };
+  console.log(loginUser.userName);
 
   return (
     <div className="loginContainer">
@@ -39,20 +48,22 @@ const Login = () => {
 
         <input
           type="text"
-          name="username"
-          value={loginUserName}
+          name="userName"
+          value={loginUser.userName}
           required
           placeholder="UserName"
-          onChange={(e) => setLoginUserName(e.target.value)}
+          onChange ={handleChange}
+          // onChange={(e) => setLoginUserName(e.target.value)}
         />
 
         <input
           type="password"
-          name="password"
+          value={loginUser.password}
           placeholder="Password"
           required
-          value={loginPassword}
-          onChange={(e) => setLoginPassword(e.target.value)}
+          name="password"
+          onChange ={handleChange}
+          // onChange={(e) => setLoginPassword(e.target.value)}
         />
 
         <div className ="login_formMessages">{message && <span>{message}</span>}</div>
