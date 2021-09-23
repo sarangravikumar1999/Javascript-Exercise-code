@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppContext } from "./context";
@@ -8,52 +9,48 @@ const Login = () => {
   const { user } = useContext(AppContext);
   console.log(user);
 
+  const [loginUser, setLoginUser] = useState([]);
+  const [errors, setErrors] = useState("");
 
-  const [loginUser,setLoginUser] = useState([]);
-  const [message, setMessage] = useState("");
-
-
-  const handleChange = (event)=>{
-      const {name,value} = event.target;
-      setLoginUser({
-        ...loginUser,
-        [name]:value
-      })
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    user.map((person) => {
-      if (loginUser.userName === person.regUserName && loginUser.password === person.regPassword) {
-        history.push("/dashboard");
-      } else {
-        setMessage(
-          "please input correct username and password else create a account"
-        );
-
-      }
-      return 0;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setLoginUser({
+      ...loginUser,
+      [name]: value,
     });
   };
-  console.log(loginUser.userName);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/users/login",
+        loginUser
+      );
+      localStorage.setItem("token", response.data.token);
+      if (response.data.success) {
+        history.push("/dashboard");
+      }
+    } catch (error) {
+      setErrors(error.response.data.msg);
+    }
+  };
 
   return (
     <div className="loginContainer">
       <form onSubmit={handleSubmit} className="login_form">
         <h1 className="login_formHeading">Login Form</h1>
         <div className="login_formText">
-          {" "}
           Please enter the Username and Password
         </div>
 
         <input
           type="text"
-          name="userName"
+          name="username"
           value={loginUser.userName}
           required
           placeholder="UserName"
-          onChange ={handleChange}
-          // onChange={(e) => setLoginUserName(e.target.value)}
+          onChange={handleChange}
         />
 
         <input
@@ -62,14 +59,17 @@ const Login = () => {
           placeholder="Password"
           required
           name="password"
-          onChange ={handleChange}
-          // onChange={(e) => setLoginPassword(e.target.value)}
+          onChange={handleChange}
         />
 
-        <div className ="login_formMessages">{message && <span>{message}</span>}</div>
+        <div className="login_formMessages">
+          {errors && <span>{errors}</span>}
+        </div>
         <div className="login_formButton">
           <button type="submit">Login</button>
-          <Link className="login_formRegister" to="/register">Register</Link>
+          <Link className="login_formRegister" to="/register">
+            Register
+          </Link>
         </div>
       </form>
     </div>
