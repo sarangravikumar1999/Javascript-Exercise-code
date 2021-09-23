@@ -1,12 +1,13 @@
-import { useContext, useState } from "react";
+import axios from "axios";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { AppContext } from "./context";
+// import { AppContext } from "./context";
 
 const Register = () => {
   const history = useHistory();
-  const { setUser, user } = useContext(AppContext);
   const [errors, setErrors] = useState([]);
   const [formData, setFormData] = useState({});
+  const [serverError, setServerError] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -17,7 +18,7 @@ const Register = () => {
     });
     let error = "";
     switch (name) {
-      case "regUserName":
+      case "username":
         error =
           value.length < 5 || value.length > 20
             ? "Enter a valid user name"
@@ -34,7 +35,7 @@ const Register = () => {
           [name]: error,
         });
         break;
-      case "regPassword":
+      case "password":
         error = value.length < 8 ? "Enter a valid password" : "";
         setErrors({
           ...errors,
@@ -42,22 +43,22 @@ const Register = () => {
         });
         break;
       case "email":
-        error = value.length<0?"enter a valid email id":"";
+        error = value.length < 0 ? "enter a valid email id" : "";
         setErrors({
           ...errors,
-          [name]:error
-        })
+          [name]: error,
+        });
         break;
-        case "gender":
-          error= value.length<0?"select a gender":"";
-          setErrors({
-            ...errors,
-            [name]:error
-          })
-          break;
+      case "gender":
+        error = value.length < 0 ? "select a gender" : "";
+        setErrors({
+          ...errors,
+          [name]: error,
+        });
+        break;
       case "confirmPassword":
         error =
-          formData.regPassword !== value
+          formData.password !== value
             ? "please enter same password as above"
             : "";
         setErrors({
@@ -66,46 +67,44 @@ const Register = () => {
         });
         break;
       default:
-        setErrors("");
+        setErrors([]);
         break;
     }
   };
-  console.log("errors are", errors);
-  console.log("--------------------------------");
 
-  console.log("form data value", formData);
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!errors) {
-      const updateUser = [...user, formData];
-      setUser(updateUser);
-      setFormData({});
-      history.push("/login");
+    try {
+      const response = axios.post(
+        "http://localhost:4000/api/users/register",
+        formData
+      );
+      console.log(await response);
+      if ((await response).data.success) {
+        history.push("/login");
+      }
+    } catch (error) {
+      setServerError(error.response.data.errors);
     }
   };
-  // user.map((person)=>{
-  //   console.log(person.regPassword);
-  // })
-
-  // console.log(user);
-  // console.log("------------------------");
-  // console.log(formData);
-
   return (
     <div>
       <form onSubmit={handleSubmit}>
+        {serverError.map((err) => {
+          return <div>{err.msg}</div>;
+        })}
+
         <div>
-          <label htmlFor="regUserName">Enter a UserName</label>
+          <label htmlFor="username">Enter a UserName</label>
           <input
             type="text"
             value={formData.firstName}
             required
             onChange={handleChange}
-            name="regUserName"
+            name="username"
           />
           <div>
-            {("regUserName" in errors )? <span>{errors.regUserName}</span> : ""}
+            {"username" in errors ? <span>{errors.username}</span> : ""}
           </div>
         </div>
         <div>
@@ -118,7 +117,7 @@ const Register = () => {
             required
             onChange={handleChange}
           />
-          <div>{("phNo" in errors )? <span>{errors.phNo}</span> : ""}</div>
+          <div>{"phNo" in errors ? <span>{errors.phNo}</span> : ""}</div>
         </div>
         <div>
           <label htmlFor="email">Enter the Email id</label>
@@ -147,16 +146,16 @@ const Register = () => {
           Female
         </div>
         <div>
-          <label htmlFor="regPassword">Password</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
-            name="regPassword"
-            value={formData.regPassword}
+            name="password"
+            value={formData.password}
             required
             onChange={handleChange}
           />
           <div>
-            {("regPassword" in errors) ? <span>{errors.regPassword}</span> : ""}
+            {"password" in errors ? <span>{errors.password}</span> : ""}
           </div>
           <br />
           <label htmlFor="confirmPassword">Confirm Password</label>
@@ -168,7 +167,7 @@ const Register = () => {
             onChange={handleChange}
           />
           <div>
-            {("confirmPassword" in errors) ? (
+            {"confirmPassword" in errors ? (
               <span>{errors.confirmPassword}</span>
             ) : (
               ""

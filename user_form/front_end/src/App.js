@@ -15,7 +15,7 @@ function App() {
         <Switch>
           <AppContext.Provider value={{ user, setUser }}>
             <Route path="/login">
-              <Login />
+              <Login  />
             </Route>
             <Route path="/register">
               <Register />
